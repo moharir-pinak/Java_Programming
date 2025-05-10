@@ -582,3 +582,631 @@ Remember to:
 5. Keep learning and updating your knowledge
 
 The best way to master Java is through consistent practice and building real applications!
+
+## 1. DETAILED JVM ARCHITECTURE
+
+### JVM Components and Their Functions:
+
+#### 1. Class Loader Subsystem:
+```java
+// Example of class loading
+public class ClassLoadingExample {
+    public static void main(String[] args) {
+        // Bootstrap ClassLoader loads core Java classes
+        String str = new String("Hello"); // Loaded by Bootstrap ClassLoader
+        
+        // Extension ClassLoader loads extension classes
+        javax.swing.JFrame frame = new javax.swing.JFrame(); // Loaded by Extension ClassLoader
+        
+        // Application ClassLoader loads application classes
+        MyCustomClass custom = new MyCustomClass(); // Loaded by Application ClassLoader
+    }
+}
+```
+
+**Class Loading Process:**
+1. Loading: Loads .class file into memory
+2. Linking:
+   - Verification: Checks bytecode validity
+   - Preparation: Allocates memory for static variables
+   - Resolution: Converts symbolic references to direct references
+3. Initialization: Executes static initializers
+
+#### 2. Runtime Data Areas:
+
+##### a. Method Area:
+```java
+public class MethodAreaExample {
+    // Stored in Method Area
+    private static final String CONSTANT = "Constant";
+    private static int counter = 0;
+    
+    // Method information stored here
+    public static void incrementCounter() {
+        counter++;
+    }
+}
+```
+
+##### b. Heap:
+```java
+public class HeapExample {
+    public static void main(String[] args) {
+        // Objects created in Heap
+        String str1 = new String("Hello");
+        Integer num = new Integer(100);
+        Object[] array = new Object[10];
+    }
+}
+```
+
+##### c. Stack:
+```java
+public class StackExample {
+    public static void main(String[] args) {
+        int x = 10; // Stored in stack
+        String str = "Hello"; // Reference in stack, object in heap
+        method1(x); // New stack frame created
+    }
+    
+    public static void method1(int param) {
+        int localVar = 20; // Stored in new stack frame
+        // Stack frame contains:
+        // - Local variables
+        // - Operand stack
+        // - Frame data
+    }
+}
+```
+
+##### d. PC Registers:
+- Each thread has its own PC register
+- Points to current execution instruction
+- Changes with each instruction execution
+
+##### e. Native Method Stack:
+```java
+public class NativeMethodExample {
+    // Native method declaration
+    public native void nativeMethod();
+    
+    static {
+        // Load native library
+        System.loadLibrary("nativeLib");
+    }
+}
+```
+
+#### 3. Execution Engine:
+
+##### a. Interpreter:
+- Reads and executes bytecode line by line
+- Slower but requires less memory
+
+##### b. JIT Compiler:
+```java
+public class JITExample {
+    public static void main(String[] args) {
+        // This method will be JIT compiled after multiple executions
+        for (int i = 0; i < 10000; i++) {
+            hotMethod();
+        }
+    }
+    
+    public static void hotMethod() {
+        // Frequently executed code
+        int sum = 0;
+        for (int i = 0; i < 1000; i++) {
+            sum += i;
+        }
+    }
+}
+```
+
+##### c. Garbage Collector:
+```java
+public class GCExample {
+    public static void main(String[] args) {
+        // Objects eligible for garbage collection
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        
+        obj1 = null; // obj1 eligible for GC
+        obj2 = new Object(); // Previous obj2 eligible for GC
+    }
+}
+```
+
+## 2. DETAILED OBJECT-ORIENTED PROGRAMMING
+
+### 1. Encapsulation:
+```java
+public class BankAccount {
+    // Private fields - data hiding
+    private String accountNumber;
+    private double balance;
+    private String accountHolder;
+    
+    // Constructor
+    public BankAccount(String accountNumber, String accountHolder) {
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        this.balance = 0.0;
+    }
+    
+    // Public methods - controlled access
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+    
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+        }
+    }
+    
+    // Getters and setters
+    public double getBalance() {
+        return balance;
+    }
+    
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+}
+```
+
+### 2. Inheritance:
+```java
+// Base class
+public class Animal {
+    protected String name;
+    protected int age;
+    
+    public Animal(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public void makeSound() {
+        System.out.println("Some sound");
+    }
+    
+    public void displayInfo() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+// Derived class
+public class Dog extends Animal {
+    private String breed;
+    
+    public Dog(String name, int age, String breed) {
+        super(name, age); // Call parent constructor
+        this.breed = breed;
+    }
+    
+    @Override
+    public void makeSound() {
+        System.out.println("Woof!");
+    }
+    
+    public void fetch() {
+        System.out.println(name + " is fetching the ball");
+    }
+}
+```
+
+### 3. Polymorphism:
+```java
+// Method Overloading
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public double add(double a, double b) {
+        return a + b;
+    }
+    
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+// Method Overriding
+public class Shape {
+    public double getArea() {
+        return 0;
+    }
+}
+
+public class Circle extends Shape {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    public double getArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+// Runtime Polymorphism
+public class PolymorphismExample {
+    public static void main(String[] args) {
+        Shape shape1 = new Circle(5);
+        Shape shape2 = new Rectangle(4, 6);
+        
+        System.out.println("Circle Area: " + shape1.getArea());
+        System.out.println("Rectangle Area: " + shape2.getArea());
+    }
+}
+```
+
+### 4. Abstraction:
+```java
+// Abstract class
+public abstract class Vehicle {
+    protected String brand;
+    protected String model;
+    
+    public Vehicle(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
+    
+    // Abstract method
+    public abstract void start();
+    
+    // Concrete method
+    public void displayInfo() {
+        System.out.println("Brand: " + brand + ", Model: " + model);
+    }
+}
+
+// Interface
+public interface Drivable {
+    void accelerate();
+    void brake();
+    void turn(String direction);
+}
+
+// Implementing class
+public class Car extends Vehicle implements Drivable {
+    public Car(String brand, String model) {
+        super(brand, model);
+    }
+    
+    @Override
+    public void start() {
+        System.out.println("Car engine started");
+    }
+    
+    @Override
+    public void accelerate() {
+        System.out.println("Car is accelerating");
+    }
+    
+    @Override
+    public void brake() {
+        System.out.println("Car is braking");
+    }
+    
+    @Override
+    public void turn(String direction) {
+        System.out.println("Car is turning " + direction);
+    }
+}
+```
+
+## 3. COLLECTION CONVERSIONS
+
+### Array to List:
+```java
+// Using Arrays.asList()
+String[] stringArray = {"apple", "banana", "orange"};
+List<String> stringList = Arrays.asList(stringArray);
+
+// Using ArrayList constructor
+List<String> stringList2 = new ArrayList<>(Arrays.asList(stringArray));
+
+// Using Stream
+List<String> stringList3 = Arrays.stream(stringArray)
+                                .collect(Collectors.toList());
+
+// For primitive arrays
+int[] intArray = {1, 2, 3, 4, 5};
+List<Integer> intList = Arrays.stream(intArray)
+                             .boxed()
+                             .collect(Collectors.toList());
+```
+
+### Array to Set:
+```java
+// Using HashSet constructor
+String[] stringArray = {"apple", "banana", "orange"};
+Set<String> stringSet = new HashSet<>(Arrays.asList(stringArray));
+
+// Using Stream
+Set<String> stringSet2 = Arrays.stream(stringArray)
+                              .collect(Collectors.toSet());
+
+// For primitive arrays
+int[] intArray = {1, 2, 3, 4, 5};
+Set<Integer> intSet = Arrays.stream(intArray)
+                           .boxed()
+                           .collect(Collectors.toSet());
+```
+
+### Array to Map:
+```java
+// Using Stream
+String[] stringArray = {"apple", "banana", "orange"};
+Map<String, Integer> stringMap = IntStream.range(0, stringArray.length)
+    .boxed()
+    .collect(Collectors.toMap(
+        i -> stringArray[i],
+        i -> i
+    ));
+
+// Using traditional approach
+Map<String, Integer> stringMap2 = new HashMap<>();
+for (int i = 0; i < stringArray.length; i++) {
+    stringMap2.put(stringArray[i], i);
+}
+```
+
+### String to List/Set:
+```java
+// String to List of Characters
+String str = "hello";
+List<Character> charList = str.chars()
+                             .mapToObj(c -> (char) c)
+                             .collect(Collectors.toList());
+
+// String to Set of Characters
+Set<Character> charSet = str.chars()
+                           .mapToObj(c -> (char) c)
+                           .collect(Collectors.toSet());
+
+// String to List of Words
+String sentence = "hello world java";
+List<String> wordList = Arrays.asList(sentence.split(" "));
+```
+
+## 4. DETAILED INTERVIEW QUESTIONS AND ANSWERS
+
+### Java Basics:
+
+1. **What is the difference between JDK, JRE, and JVM?**
+   - JDK (Java Development Kit):
+     - Complete development package
+     - Includes JRE and development tools
+     - Contains compiler, debugger, and other tools
+     - Used for developing Java applications
+   
+   - JRE (Java Runtime Environment):
+     - Runtime environment for Java applications
+     - Includes JVM and core libraries
+     - Used for running Java applications
+     - Does not include development tools
+   
+   - JVM (Java Virtual Machine):
+     - Virtual machine that executes Java bytecode
+     - Platform-dependent
+     - Provides memory management and garbage collection
+     - Ensures platform independence
+
+2. **Explain the concept of platform independence in Java.**
+   - Write Once, Run Anywhere (WORA)
+   - Java source code is compiled to bytecode
+   - Bytecode is platform-independent
+   - JVM is platform-specific
+   - JVM interprets bytecode for specific platform
+   - Example:
+     ```java
+     // Same bytecode runs on different platforms
+     public class PlatformIndependent {
+         public static void main(String[] args) {
+             System.out.println("Hello, World!");
+         }
+     }
+     ```
+
+3. **What is the difference between == and .equals()?**
+   - == operator:
+     - Compares object references
+     - Checks if two objects point to same memory location
+     - Used for primitive types
+   
+   - .equals() method:
+     - Compares object contents
+     - Can be overridden for custom comparison
+     - Used for objects
+   
+   Example:
+   ```java
+   String str1 = new String("hello");
+   String str2 = new String("hello");
+   
+   System.out.println(str1 == str2);        // false (different references)
+   System.out.println(str1.equals(str2));   // true (same content)
+   ```
+
+4. **What is the difference between String, StringBuilder, and StringBuffer?**
+   - String:
+     - Immutable
+     - Thread-safe
+     - Best for small, fixed strings
+   
+   - StringBuilder:
+     - Mutable
+     - Not thread-safe
+     - Better performance
+     - Best for single-threaded operations
+   
+   - StringBuffer:
+     - Mutable
+     - Thread-safe
+     - Synchronized methods
+     - Best for multi-threaded operations
+   
+   Example:
+   ```java
+   // String
+   String str = "hello";
+   str = str + " world"; // Creates new object
+   
+   // StringBuilder
+   StringBuilder sb = new StringBuilder("hello");
+   sb.append(" world"); // Modifies existing object
+   
+   // StringBuffer
+   StringBuffer sbf = new StringBuffer("hello");
+   sbf.append(" world"); // Thread-safe modification
+   ```
+
+### OOP Questions:
+
+1. **What are the four principles of OOP?**
+   - Encapsulation:
+     - Bundling data and methods
+     - Data hiding
+     - Access control
+   
+   - Inheritance:
+     - Code reuse
+     - Parent-child relationship
+     - Method overriding
+   
+   - Polymorphism:
+     - Multiple forms
+     - Method overloading
+     - Method overriding
+   
+   - Abstraction:
+     - Hide implementation details
+     - Abstract classes
+     - Interfaces
+
+2. **What is the difference between abstract class and interface?**
+   - Abstract Class:
+     - Can have concrete methods
+     - Can have constructors
+     - Single inheritance
+     - Can have instance variables
+   
+   - Interface:
+     - All methods are abstract (before Java 8)
+     - Can have default methods
+     - Multiple inheritance
+     - Only static final variables
+   
+   Example:
+   ```java
+   // Abstract class
+   public abstract class Animal {
+       protected String name;
+       
+       public Animal(String name) {
+           this.name = name;
+       }
+       
+       public abstract void makeSound();
+       
+       public void sleep() {
+           System.out.println("Sleeping...");
+       }
+   }
+   
+   // Interface
+   public interface Flyable {
+       void fly();
+       
+       default void land() {
+           System.out.println("Landing...");
+       }
+   }
+   ```
+
+3. **What is method overloading and overriding?**
+   - Method Overloading:
+     - Same method name
+     - Different parameters
+     - Same or different return type
+     - Compile-time polymorphism
+   
+   - Method Overriding:
+     - Same method signature
+     - Different implementation
+     - Runtime polymorphism
+     - @Override annotation
+   
+   Example:
+   ```java
+   // Overloading
+   public class Calculator {
+       public int add(int a, int b) {
+           return a + b;
+       }
+       
+       public double add(double a, double b) {
+           return a + b;
+       }
+   }
+   
+   // Overriding
+   public class Animal {
+       public void makeSound() {
+           System.out.println("Some sound");
+       }
+   }
+   
+   public class Dog extends Animal {
+       @Override
+       public void makeSound() {
+           System.out.println("Woof!");
+       }
+   }
+   ```
+
+4. **What is the difference between composition and inheritance?**
+   - Composition:
+     - "Has-a" relationship
+     - More flexible
+     - Better encapsulation
+     - Loose coupling
+   
+   - Inheritance:
+     - "Is-a" relationship
+     - Tight coupling
+     - Code reuse
+     - Less flexible
+   
+   Example:
+   ```java
+   // Composition
+   public class Car {
+       private Engine engine;
+       private Wheel[] wheels;
+       
+       public Car() {
+           engine = new Engine();
+           wheels = new Wheel[4];
+       }
+   }
+   
+   // Inheritance
+   public class SportsCar extends Car {
+       private boolean turbo;
+       
+       public void enableTurbo() {
+           turbo = true;
+       }
+   }
+   ```
