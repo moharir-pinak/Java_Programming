@@ -1210,3 +1210,726 @@ List<String> wordList = Arrays.asList(sentence.split(" "));
        }
    }
    ```
+
+## 5. DATA STRUCTURE MANIPULATIONS AND DSA SOLUTIONS
+
+### 1. Array Manipulations:
+
+#### Basic Array Operations:
+```java
+public class ArrayOperations {
+    // Find array length
+    public static int getLength(int[] arr) {
+        return arr.length;
+    }
+    
+    // Find element at index
+    public static int getElement(int[] arr, int index) {
+        if (index < 0 || index >= arr.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        return arr[index];
+    }
+    
+    // Update element at index
+    public static void updateElement(int[] arr, int index, int value) {
+        if (index < 0 || index >= arr.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        arr[index] = value;
+    }
+    
+    // Insert element at index
+    public static int[] insertElement(int[] arr, int index, int value) {
+        int[] newArr = new int[arr.length + 1];
+        for (int i = 0; i < index; i++) {
+            newArr[i] = arr[i];
+        }
+        newArr[index] = value;
+        for (int i = index; i < arr.length; i++) {
+            newArr[i + 1] = arr[i];
+        }
+        return newArr;
+    }
+    
+    // Delete element at index
+    public static int[] deleteElement(int[] arr, int index) {
+        int[] newArr = new int[arr.length - 1];
+        for (int i = 0; i < index; i++) {
+            newArr[i] = arr[i];
+        }
+        for (int i = index + 1; i < arr.length; i++) {
+            newArr[i - 1] = arr[i];
+        }
+        return newArr;
+    }
+    
+    // Reverse array
+    public static void reverseArray(int[] arr) {
+        int left = 0;
+        int right = arr.length - 1;
+        while (left < right) {
+            int temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+            left++;
+            right--;
+        }
+    }
+    
+    // Rotate array by k positions
+    public static void rotateArray(int[] arr, int k) {
+        k = k % arr.length;
+        reverseArray(arr, 0, arr.length - 1);
+        reverseArray(arr, 0, k - 1);
+        reverseArray(arr, k, arr.length - 1);
+    }
+    
+    private static void reverseArray(int[] arr, int start, int end) {
+        while (start < end) {
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+            start++;
+            end--;
+        }
+    }
+}
+```
+
+#### Common Array Problems:
+
+1. **Find Missing Number**:
+```java
+public class ArrayProblems {
+    // Using sum formula
+    public static int findMissingNumber(int[] arr, int n) {
+        int expectedSum = n * (n + 1) / 2;
+        int actualSum = 0;
+        for (int num : arr) {
+            actualSum += num;
+        }
+        return expectedSum - actualSum;
+    }
+    
+    // Using XOR
+    public static int findMissingNumberXOR(int[] arr, int n) {
+        int xor = 0;
+        for (int i = 1; i <= n; i++) {
+            xor ^= i;
+        }
+        for (int num : arr) {
+            xor ^= num;
+        }
+        return xor;
+    }
+}
+```
+
+2. **Find Duplicates**:
+```java
+public class DuplicateProblems {
+    // Using HashSet
+    public static List<Integer> findDuplicates(int[] arr) {
+        List<Integer> duplicates = new ArrayList<>();
+        Set<Integer> set = new HashSet<>();
+        
+        for (int num : arr) {
+            if (!set.add(num)) {
+                duplicates.add(num);
+            }
+        }
+        return duplicates;
+    }
+    
+    // Using sorting
+    public static List<Integer> findDuplicatesSort(int[] arr) {
+        List<Integer> duplicates = new ArrayList<>();
+        Arrays.sort(arr);
+        
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] == arr[i-1]) {
+                duplicates.add(arr[i]);
+            }
+        }
+        return duplicates;
+    }
+}
+```
+
+3. **Find Maximum Subarray Sum**:
+```java
+public class SubarrayProblems {
+    // Kadane's Algorithm
+    public static int maxSubarraySum(int[] arr) {
+        int maxSoFar = arr[0];
+        int maxEndingHere = arr[0];
+        
+        for (int i = 1; i < arr.length; i++) {
+            maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+            maxSoFar = Math.max(maxSoFar, maxEndingHere);
+        }
+        return maxSoFar;
+    }
+    
+    // Find subarray with given sum
+    public static int[] subarrayWithSum(int[] arr, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int sum = 0;
+        
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+            if (sum == target) {
+                return new int[]{0, i};
+            }
+            if (map.containsKey(sum - target)) {
+                return new int[]{map.get(sum - target) + 1, i};
+            }
+            map.put(sum, i);
+        }
+        return new int[]{-1, -1};
+    }
+}
+```
+
+### 2. String Manipulations:
+
+#### Basic String Operations:
+```java
+public class StringOperations {
+    // Get string length
+    public static int getLength(String str) {
+        return str.length();
+    }
+    
+    // Get character at index
+    public static char getChar(String str, int index) {
+        return str.charAt(index);
+    }
+    
+    // Convert to char array
+    public static char[] toCharArray(String str) {
+        return str.toCharArray();
+    }
+    
+    // Convert char array to string
+    public static String toString(char[] arr) {
+        return new String(arr);
+    }
+    
+    // Reverse string
+    public static String reverse(String str) {
+        char[] chars = str.toCharArray();
+        int left = 0;
+        int right = chars.length - 1;
+        
+        while (left < right) {
+            char temp = chars[left];
+            chars[left] = chars[right];
+            chars[right] = temp;
+            left++;
+            right--;
+        }
+        return new String(chars);
+    }
+    
+    // Check if palindrome
+    public static boolean isPalindrome(String str) {
+        int left = 0;
+        int right = str.length() - 1;
+        
+        while (left < right) {
+            if (str.charAt(left) != str.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+```
+
+#### Common String Problems:
+
+1. **Longest Palindromic Substring**:
+```java
+public class StringProblems {
+    public static String longestPalindrome(String s) {
+        if (s == null || s.length() < 1) return "";
+        
+        int start = 0, end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int len1 = expandAroundCenter(s, i, i);
+            int len2 = expandAroundCenter(s, i, i+1);
+            int len = Math.max(len1, len2);
+            
+            if (len > end - start) {
+                start = i - (len-1)/2;
+                end = i + len/2;
+            }
+        }
+        return s.substring(start, end + 1);
+    }
+    
+    private static int expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
+    }
+}
+```
+
+2. **String Permutations**:
+```java
+public class PermutationProblems {
+    public static List<String> getPermutations(String str) {
+        List<String> result = new ArrayList<>();
+        permute(str, 0, str.length() - 1, result);
+        return result;
+    }
+    
+    private static void permute(String str, int left, int right, List<String> result) {
+        if (left == right) {
+            result.add(str);
+            return;
+        }
+        
+        for (int i = left; i <= right; i++) {
+            str = swap(str, left, i);
+            permute(str, left + 1, right, result);
+            str = swap(str, left, i);
+        }
+    }
+    
+    private static String swap(String str, int i, int j) {
+        char[] chars = str.toCharArray();
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+        return new String(chars);
+    }
+}
+```
+
+### 3. Linked List Manipulations:
+
+#### Basic LinkedList Operations:
+```java
+public class LinkedListOperations {
+    // Node class
+    static class Node {
+        int data;
+        Node next;
+        
+        Node(int data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+    
+    // Insert at beginning
+    public static Node insertAtBeginning(Node head, int data) {
+        Node newNode = new Node(data);
+        newNode.next = head;
+        return newNode;
+    }
+    
+    // Insert at end
+    public static Node insertAtEnd(Node head, int data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            return newNode;
+        }
+        
+        Node current = head;
+        while (current.next != null) {
+            current = current.next;
+        }
+        current.next = newNode;
+        return head;
+    }
+    
+    // Delete node
+    public static Node deleteNode(Node head, int key) {
+        if (head == null) return null;
+        
+        if (head.data == key) {
+            return head.next;
+        }
+        
+        Node current = head;
+        while (current.next != null) {
+            if (current.next.data == key) {
+                current.next = current.next.next;
+                break;
+            }
+            current = current.next;
+        }
+        return head;
+    }
+    
+    // Reverse linked list
+    public static Node reverse(Node head) {
+        Node prev = null;
+        Node current = head;
+        
+        while (current != null) {
+            Node next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        return prev;
+    }
+}
+```
+
+#### Common LinkedList Problems:
+
+1. **Detect Cycle**:
+```java
+public class LinkedListProblems {
+    public static boolean hasCycle(Node head) {
+        if (head == null || head.next == null) return false;
+        
+        Node slow = head;
+        Node fast = head;
+        
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            
+            if (slow == fast) return true;
+        }
+        return false;
+    }
+    
+    // Find cycle start node
+    public static Node findCycleStart(Node head) {
+        if (head == null || head.next == null) return null;
+        
+        Node slow = head;
+        Node fast = head;
+        boolean hasCycle = false;
+        
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            
+            if (slow == fast) {
+                hasCycle = true;
+                break;
+            }
+        }
+        
+        if (!hasCycle) return null;
+        
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+}
+```
+
+2. **Merge K Sorted Lists**:
+```java
+public class MergeKSortedLists {
+    public static Node mergeKLists(Node[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.data - b.data);
+        
+        for (Node list : lists) {
+            if (list != null) {
+                pq.offer(list);
+            }
+        }
+        
+        Node dummy = new Node(0);
+        Node current = dummy;
+        
+        while (!pq.isEmpty()) {
+            Node node = pq.poll();
+            current.next = node;
+            current = current.next;
+            
+            if (node.next != null) {
+                pq.offer(node.next);
+            }
+        }
+        
+        return dummy.next;
+    }
+}
+```
+
+### 4. Tree Manipulations:
+
+#### Basic Tree Operations:
+```java
+public class TreeOperations {
+    static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        
+        TreeNode(int val) {
+            this.val = val;
+        }
+    }
+    
+    // Insert node
+    public static TreeNode insert(TreeNode root, int val) {
+        if (root == null) {
+            return new TreeNode(val);
+        }
+        
+        if (val < root.val) {
+            root.left = insert(root.left, val);
+        } else {
+            root.right = insert(root.right, val);
+        }
+        
+        return root;
+    }
+    
+    // Delete node
+    public static TreeNode delete(TreeNode root, int val) {
+        if (root == null) return null;
+        
+        if (val < root.val) {
+            root.left = delete(root.left, val);
+        } else if (val > root.val) {
+            root.right = delete(root.right, val);
+        } else {
+            if (root.left == null) return root.right;
+            if (root.right == null) return root.left;
+            
+            TreeNode min = findMin(root.right);
+            root.val = min.val;
+            root.right = delete(root.right, min.val);
+        }
+        
+        return root;
+    }
+    
+    private static TreeNode findMin(TreeNode node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
+}
+```
+
+#### Common Tree Problems:
+
+1. **Level Order Traversal**:
+```java
+public class TreeProblems {
+    public static List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) return result;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> currentLevel = new ArrayList<>();
+            
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                currentLevel.add(node.val);
+                
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+            
+            result.add(currentLevel);
+        }
+        
+        return result;
+    }
+}
+```
+
+2. **Validate Binary Search Tree**:
+```java
+public class BSTProblems {
+    public static boolean isValidBST(TreeNode root) {
+        return validate(root, null, null);
+    }
+    
+    private static boolean validate(TreeNode node, Integer min, Integer max) {
+        if (node == null) return true;
+        
+        if ((min != null && node.val <= min) || 
+            (max != null && node.val >= max)) {
+            return false;
+        }
+        
+        return validate(node.left, min, node.val) && 
+               validate(node.right, node.val, max);
+    }
+}
+```
+
+### 5. Graph Manipulations:
+
+#### Basic Graph Operations:
+```java
+public class GraphOperations {
+    static class Graph {
+        private int V;
+        private List<List<Integer>> adj;
+        
+        Graph(int V) {
+            this.V = V;
+            adj = new ArrayList<>();
+            for (int i = 0; i < V; i++) {
+                adj.add(new ArrayList<>());
+            }
+        }
+        
+        void addEdge(int v, int w) {
+            adj.get(v).add(w);
+        }
+        
+        List<Integer> getAdjacent(int v) {
+            return adj.get(v);
+        }
+    }
+    
+    // DFS traversal
+    public static void dfs(Graph graph, int start) {
+        boolean[] visited = new boolean[graph.V];
+        dfsUtil(graph, start, visited);
+    }
+    
+    private static void dfsUtil(Graph graph, int v, boolean[] visited) {
+        visited[v] = true;
+        System.out.print(v + " ");
+        
+        for (int neighbor : graph.getAdjacent(v)) {
+            if (!visited[neighbor]) {
+                dfsUtil(graph, neighbor, visited);
+            }
+        }
+    }
+    
+    // BFS traversal
+    public static void bfs(Graph graph, int start) {
+        boolean[] visited = new boolean[graph.V];
+        Queue<Integer> queue = new LinkedList<>();
+        
+        visited[start] = true;
+        queue.offer(start);
+        
+        while (!queue.isEmpty()) {
+            int v = queue.poll();
+            System.out.print(v + " ");
+            
+            for (int neighbor : graph.getAdjacent(v)) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.offer(neighbor);
+                }
+            }
+        }
+    }
+}
+```
+
+#### Common Graph Problems:
+
+1. **Topological Sort**:
+```java
+public class GraphProblems {
+    public static List<Integer> topologicalSort(Graph graph) {
+        Stack<Integer> stack = new Stack<>();
+        boolean[] visited = new boolean[graph.V];
+        
+        for (int i = 0; i < graph.V; i++) {
+            if (!visited[i]) {
+                topologicalSortUtil(graph, i, visited, stack);
+            }
+        }
+        
+        List<Integer> result = new ArrayList<>();
+        while (!stack.isEmpty()) {
+            result.add(stack.pop());
+        }
+        return result;
+    }
+    
+    private static void topologicalSortUtil(Graph graph, int v, 
+                                          boolean[] visited, Stack<Integer> stack) {
+        visited[v] = true;
+        
+        for (int neighbor : graph.getAdjacent(v)) {
+            if (!visited[neighbor]) {
+                topologicalSortUtil(graph, neighbor, visited, stack);
+            }
+        }
+        
+        stack.push(v);
+    }
+}
+```
+
+2. **Dijkstra's Algorithm**:
+```java
+public class ShortestPathProblems {
+    public static int[] dijkstra(int[][] graph, int source) {
+        int V = graph.length;
+        int[] dist = new int[V];
+        boolean[] visited = new boolean[V];
+        
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[source] = 0;
+        
+        for (int count = 0; count < V-1; count++) {
+            int u = minDistance(dist, visited);
+            visited[u] = true;
+            
+            for (int v = 0; v < V; v++) {
+                if (!visited[v] && graph[u][v] != 0 && 
+                    dist[u] != Integer.MAX_VALUE && 
+                    dist[u] + graph[u][v] < dist[v]) {
+                    dist[v] = dist[u] + graph[u][v];
+                }
+            }
+        }
+        return dist;
+    }
+    
+    private static int minDistance(int[] dist, boolean[] visited) {
+        int min = Integer.MAX_VALUE;
+        int min_index = -1;
+        
+        for (int v = 0; v < dist.length; v++) {
+            if (!visited[v] && dist[v] <= min) {
+                min = dist[v];
+                min_index = v;
+            }
+        }
+        return min_index;
+    }
+}
+```
+
+Remember to:
+1. Practice implementing these algorithms
+2. Understand the time and space complexity
+3. Test with different input sizes
+4. Consider edge cases
+5. Optimize for performance when needed
+
+The best way to master DSA is through consistent practice and understanding the underlying concepts!
